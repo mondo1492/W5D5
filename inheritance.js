@@ -1,14 +1,9 @@
-
-
-class Surrogate{
-  constructor(){}
-}
-
-let inherits = Function.prototype.inherits = function (SuperClass, SubClass) {
+const inherits = Function.prototype.inherits = function (SuperClass) {
+  function Surrogate(){}
   Surrogate.prototype = SuperClass.prototype;
-  SubClass.prototype = new Surrogate();
-  SubClass.prototype.constructor = SubClass;
+  this.prototype = new Surrogate();
+  this.prototype.constructor = this;
 };
 
-module.exports(inherits);
+module.exports = inherits;
 // function Surrogate (){}

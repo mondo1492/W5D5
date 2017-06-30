@@ -1,8 +1,7 @@
 function sum(...args) {
-  let total = args.reduce(function(acc, el) {
+  return args.reduce(function(acc, el) {
     return acc + el;
-  }, 0);
-  return total;
+  });
 }
 
 // Function.prototype.myBind = function(obj, ...args) {
@@ -21,35 +20,43 @@ Function.prototype.myBind = function() {
     //set the "this" of the function we're binding to the first argument
 };
 
-class Cat {
-  constructor(name) {
-    this.name = name;
-  }
-
-  says(sound, person) {
-    console.log(`${this.name} says ${sound} to ${person}!`);
-    return true;
-  }
+function curriedSum (numArgs) {
+  const numbers = [];
+  return function _curriedSum (num) {
+    numbers.push(num);
+    if (numbers.length === numArgs) {
+      return sum(...numbers);
+    } else {
+      return _curriedSum;
+    }
+  };
 }
 
-const markov = new Cat("Markov");
-const breakfast = new Cat("Breakfast");
 
-markov.says("meow", "Ned");
-// Markov says meow to Ned!
-// true
+Function.prototype.curry = function(numArgs) {
+  let self = this;
+  const numbers = [];
+  return function _curry(arg) {
+    numbers.push(arg);
+    if (numbers.length === numArgs) {
+      return self.apply(self, numbers);
+    } else {
+      return _curry;
+    }
+  };
+};
 
-// bind time args are "meow" and "Kush", no call time args
-markov.says.myBind(breakfast, "meow", "Kush")();
-// Breakfast says meow to Kush!
-// true
+// why cant we use function after invoking it?
 
-// no bind time args (other than context), call time args are "meow" and "me"
-markov.says.myBind(breakfast)("meow", "a tree");
-// Breakfast says meow to a tree!
-// true
-
-// bind time arg is "meow", call time arg is "Markov"
-markov.says.myBind(breakfast, "meow")("Markov");
-// Breakfast says meow to Markov!
-// true
+Function.prototype.curry2 = function(numArgs) {
+  let self = this;
+  const numbers = [];
+  return function _curry(arg) {
+    numbers.push(arg);
+    if (numbers.length === numArgs) {
+      return self(...numbers);
+    } else {
+      return _curry;
+    }
+  };
+};
